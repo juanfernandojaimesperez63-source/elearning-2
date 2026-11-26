@@ -1,0 +1,55 @@
+﻿Caso	Paso	Descripción	Datos / precondición	Resultado esperado	Resultado real	Aprobar / Reprobar
+USU-01	USU-01-P1	Ingresar como Carlos	carlos@demo.local / Abcdef1!	Panel docente y Mis cursos visibles.		
+USU-01	USU-01-P2	Crear curso	Demo WEB, descripción Práctica, Programación, Básico	Curso activo creado y asociado a Carlos.		
+USU-01	USU-01-P3	Agregar PDF	datos_prueba/ejemplo_5MB.pdf; título Guía	Material guardado y descargable por Carlos.		
+USU-01	USU-01-P4	Crear evaluación	Inicio ayer, límite mañana, 30 minutos; 3 preguntas con opciones A/B, correcta A; puntajes 2,0/2,0/1,0	Evaluación en borrador.		
+USU-01	USU-01-P5	Publicar evaluación	Botón Publicar de la evaluación creada	Estado publicada; sin errores.		
+USU-02	USU-02-P1	Registrar a Laura	Laura Gómez / laura@example.com / Abcdef1! y confirmación igual; usar correo nuevo si ya existe	Registro exitoso; redirige a login.		
+USU-02	USU-02-P2	Iniciar sesión	laura@example.com / Abcdef1!	Menú estudiante.		
+USU-02	USU-02-P3	Buscar e inscribirse	Demo WEB del USU-01; categoría Programación y nivel Básico	Curso encontrado; inscripción exitosa.		
+USU-02	USU-02-P4	Consultar material	Descargar Guía del curso Demo WEB	PDF disponible.		
+USU-02	USU-02-P5	Presentar evaluación	Iniciar y seleccionar todas las respuestas A; enviar	Resultado 5,0; una sola entrega.		
+USU-02	USU-02-P6	Consultar notas	Mis calificaciones; filtrar por Demo WEB	Curso, evaluación, nota 5,0 y fecha propios visibles.		
+USU-03	USU-03-P1	Enviar registro inválido	Nombre vacío, laura@, abc, confirmación diferente; desactivar validación HTML solo para comprobar servidor	Errores comprensibles por campo; no crea cuenta.		
+USU-03	USU-03-P2	Enviar clave equivocada	sofia@demo.local / Incorrecta1! una vez	Mensaje de credenciales incorrectas.		
+USU-03	USU-03-P3	Cerrar sesión y usar Atrás	Entrar con Sofía, abrir Mis cursos, cerrar sesión, Atrás y recargar	No-store; exige acceso nuevamente, sin datos privados utilizables.		
+USU-03	USU-03-P4	Abrir URL inexistente	/pagina-inexistente	404 con texto comprensible.		
+SIS-01	SIS-01-P1	Abrir ruta sin sesión	Incógnito, /mis-cursos	Redirección a /login.		
+SIS-01	SIS-01-P2	Abrir Crear curso como estudiante	Sofía: /docente/cursos/nuevo	403; no formulario de creación.		
+SIS-01	SIS-01-P3	Abrir gestión de Carlos como Ana	ana@demo.local, URL de materiales/evaluación de Python de Carlos	403; no permite modificar contenido.		
+SIS-01	SIS-01-P4	Abrir PDF sin inscripción	Registrar estudiante nuevo; copiar URL /materiales/MID/archivo de Carlos	403 y sin PDF.		
+SIS-02	SIS-02-P1	Preparar evaluación corta	Carlos, curso activo, evaluación con ventana vigente, duración 1 minuto y una pregunta de 5,0; publicar. Estudiante inscrito nuevo	Evaluación disponible.		
+SIS-02	SIS-02-P2	Iniciar y esperar	Elegir respuesta correcta; no enviar manualmente; esperar 60 segundos con pestaña abierta	Temporizador llega a cero y autoenvía; resultado 5,0.		
+SIS-02	SIS-02-P3	Reabrir intento	Abrir evaluación anterior y pulsar iniciar por URL POST desde formulario	Redirige al resultado; no crea segunda entrega.		
+SIS-02	SIS-02-P4	Abrir fuera de fechas	Evaluación vencida del seed en Python desde cero	Mensaje fuera de fechas; no crea intento.		
+SIS-02	SIS-02-P5	Enviar sin responder	Otra evaluación vigente; dejar pregunta vacía, pulsar enviar, cancelar y luego confirmar	Primero permanece en formulario; al confirmar obtiene 0,0.		
+SIS-03	SIS-03-P1	Arrancar localmente	Comandos README; Chrome http://localhost:5000	Carga login sin errores.		
+SIS-03	SIS-03-P2	Comprobar persistencia	Después de USU-02, detener con Ctrl+C y ejecutar otra vez sin borrar DB	Usuarios, inscripción y nota continúan presentes.		
+SIS-03	SIS-03-P3	Cambiar ID de resultado	Cuenta diferente de Laura: abrir URL /resultados/ID de su nota	404; no revela nota ajena.		
+SIS-03	SIS-03-P4	Revisar hash y claves foráneas	SQLite: SELECT password_hash FROM usuarios; PRAGMA foreign_keys en conexión get_db (pytest test_persistencia)	Contraseñas distintas del texto original; foreign_keys=1 en conexión app.		
+INT-01	INT-01-P1	Registrar estudiante	Nombre Prueba; correo nuevo prueba@example.com; Abcdef1! repetida	Registro crea estudiante, no docente.		
+INT-01	INT-01-P2	Entrar con cuenta creada	prueba@example.com / Abcdef1!	Panel estudiante; Catálogo, Mis cursos, Calificaciones.		
+INT-01	INT-01-P3	Salir y entrar como docente	Cerrar sesión; carlos@demo.local / Abcdef1!	Mis cursos y Crear curso; sin menú de notas de estudiante.		
+INT-01	INT-01-P4	Salir y abrir ruta privada	Cerrar sesión; /docente/cursos	Redirige a login.		
+INT-02	INT-02-P1	Crear título duplicado	Carlos crea dos veces título Repetido, descripción Práctica, Ciencias, Básico	Segundo intento muestra error; solo un curso de ese título para Carlos.		
+INT-02	INT-02-P2	Combinar filtros	Sofía: q=Python, Programación, Básico	Solo Python desde cero y coincidencias activas.		
+INT-02	INT-02-P3	Buscar sin resultados y limpiar	q=zzzinexistente; pulsar Limpiar filtros	Mensaje sin resultados; catálogo completo al limpiar.		
+INT-02	INT-02-P4	Inscribirse dos veces	Sofía, curso Python desde cero	Primera inscripción exitosa, segunda advertencia; una fila.		
+INT-02	INT-02-P5	Inscribir inactivo por URL	Copiar formulario de inscripción y cambiar action al ID de Diseño avanzado; conservar CSRF	403; ninguna inscripción al inactivo.		
+INT-03	INT-03-P1	Subir archivos válidos	Carlos, curso propio; ejemplo_5MB.pdf y ejemplo_10MB.pdf	Ambos se aceptan, incluido tamaño exacto 10 485 760 bytes.		
+INT-03	INT-03-P2	Subir archivos inválidos	ejemplo_11MB.pdf, rechazar.exe, texto renombrado .pdf	Rechazo claro; no se guardan como materiales.		
+INT-03	INT-03-P3	Validar publicación inválida	Evaluación con puntajes 2/2/0,5 o dos opciones correctas mediante petición manipulada	Rechazo; no se publica.		
+INT-03	INT-03-P4	Publicar y recibir entrega	Evaluación 2/2/1 válida, estudiante inscrito envía	Nota calculada y entrega guardada.		
+INT-03	INT-03-P5	Intentar editar y eliminar	Carlos abre editar y confirma eliminar después de entrega	Mensaje Hay entregas; preguntas y resultado no cambian.		
+UNI-01	UNI-01-P1	Ejecutar validaciones de claves	pytest tests/test_unitarias.py -k claves -q; Abcdef1!, 7 caracteres, sin mayúscula/número/símbolo	Válida aceptada; todas las inválidas rechazadas.		
+UNI-01	UNI-01-P2	Ejecutar validaciones de correo	pytest tests/test_unitarias.py -k correo -q; laura@example.com, laura@, laura.com	Correo completo aceptado; inválidos rechazados.		
+UNI-02	UNI-02-P1	Verificar calificación pura	pytest tests/test_unitarias.py -k nota -q; 200/200/100	Todas=500, solo una de 200=200, ninguna=0.		
+UNI-02	UNI-02-P2	Verificar sumas exactas	pytest tests/test_unitarias.py -k suma -q; 2+2+1; 1,7+1,7+1,6; 4,5 y 5,5	5,0 aceptado incluso con decimales; 4,5 y 5,5 rechazados.		
+UNI-03	UNI-03-P1	Simular cuatro fallos	pytest tests/test_unitarias.py -k bloqueo -q; hora inyectada	Cuatro fallos sin bloqueo.		
+UNI-03	UNI-03-P2	Simular quinto fallo y clave correcta antes del límite	Misma prueba; quinto fallo a T y clave correcta en T+14 min	Bloqueado hasta T+15 minutos.		
+UNI-03	UNI-03-P3	Simular vencimiento y cuenta inactiva	Misma prueba; clave correcta en T+15 min; cuenta inactiva	Acceso reinicia contador a cero y limpia bloqueo; inactiva rechazada.		
+CRUD-MAT	CRUD-MAT-P1	Modificar y eliminar material	Carlos cambia título PDF, reemplaza archivo; modifica URL de video; cancela y luego confirma eliminar	Cambios visibles; cancelación conserva material; eliminación confirmada retira recurso.		
+BORRADOR	BORRADOR-P1	Abrir evaluación borrador	Estudiante inscrito, lista del curso y /evaluaciones/ID del borrador	No aparece en lista; URL directa 404.		
+NO-INSCRITO	NO-INSCRITO-P1	Presentar sin inscripción	Estudiante nuevo; abrir evaluación e iniciar por URL conservando token CSRF	403; ninguna entrega.		
+RECARGA	RECARGA-P1	Recargar temporizador	Intento nuevo de 30 minutos; esperar 1 minuto; marcar opción; recargar	Quedan alrededor de 29 minutos, no 30; selección permanece en misma pestaña.		
+413	413-P1	Solicitud excesiva	Subir PDF de más de 12 MiB en curso propio	Página 413 amigable; sin material guardado.		
