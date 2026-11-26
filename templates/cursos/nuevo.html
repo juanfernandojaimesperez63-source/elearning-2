@@ -1,0 +1,18 @@
+{% extends 'base.html' %}{% block contenido %}<h1>Crear curso</h1><form method="post" class="tarjeta formulario"><input type="hidden" name="csrf" value="{{ csrf }}">{{ campo('titulo','Título',valor=request.form.get('titulo',''),error=errores.get('titulo','')) }}<div class="campo"><label for="descripcion">Descripción</label><textarea id="descripcion" name="descripcion" required>{{ request.form.get('descripcion','') }}</textarea>{% if errores.get('descripcion') %}<small class="error-texto">Error: {{ errores.descripcion }}</small>{% endif %}</div>{% for nombre,etiqueta,opciones in [('categoria','Categoría',categorias),('nivel','Nivel',niveles)] %}<div class="campo"><label for="{{ nombre }}">{{ etiqueta }}</label><select name="{{ nombre }}" id="{{ nombre }}" required><option value="">Seleccione</option>{% for opcion in opciones %}<option {% if request.form.get(nombre)==opcion %}selected{% endif %}>{{ opcion }}</option>{% endfor %}</select>{% if errores.get(nombre) %}<small class="error-texto">Error: {{ errores[nombre] }}</small>{% endif %}</div>{% endfor %}
+<fieldset class="selector-portada">
+  <legend>Portada del curso</legend>
+  <label class="portada-automatica">
+    <input type="radio" name="portada" value="" {% if not request.form.get('portada') %}checked{% endif %}>
+    Automática según la categoría
+  </label>
+  <div class="galeria-portadas">
+    {% for archivo, nombre in portadas.items() %}
+    <label class="opcion-portada">
+      <img src="{{ url_for('static', filename='img/' ~ archivo) }}" alt="" width="300" height="100" loading="lazy">
+      <span><input type="radio" name="portada" value="{{ archivo }}" {% if request.form.get('portada') == archivo %}checked{% endif %}>{{ nombre }}</span>
+    </label>
+    {% endfor %}
+  </div>
+  {% if errores.get('portada') %}<small class="error-texto">{{ errores.portada }}</small>{% endif %}
+</fieldset>
+{{ boton('Guardar curso') }}</form>{% endblock %}
