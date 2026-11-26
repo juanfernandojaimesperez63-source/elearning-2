@@ -1,0 +1,17 @@
+{% from 'macros.html' import campo, boton, alerta, badge, tarjeta, icono with context %}
+{% set publica = request.endpoint in ['auth.login','auth.registro'] %}
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{% block titulo %}E-Learning · Tu espacio para crecer{% endblock %}</title><link rel="stylesheet" href="{{ url_for('static',filename='css/componentes.css') }}"><link rel="stylesheet" href="{{ url_for('static',filename='css/app.css') }}"><link rel="stylesheet" href="{{ url_for('static',filename='css/imagenes.css') }}"><script src="{{ url_for('static',filename='js/app.js') }}" defer></script></head>
+<body class="{{ 'pantalla-acceso' if publica else 'pantalla-app' }}"><a class="saltar" href="#contenido">Saltar al contenido</a>
+{% if not publica %}
+<aside class="sidebar"><a class="marca" href="{{ url_for('panel.inicio') }}"><span class="marca-simbolo">F</span><span>E-Learning<small>Universidad Simón Bolívar<br>Sede Cúcuta</small></span></a>
+{% if g.usuario %}<div class="perfil"><span class="avatar">{{ g.usuario.nombre[0] }}</span><span><strong>{{ g.usuario.nombre }}</strong><small>{{ g.usuario.rol|capitalize }}</small></span>{{ icono('abajo') }}</div>
+<p class="nav-etiqueta">{{ 'MI PANEL' if g.usuario.rol=='docente' else 'MI APRENDIZAJE' }}</p>
+<nav aria-label="Principal">{% set enlaces=[('panel.inicio','Inicio','inicio'),('cursos.docente' if g.usuario.rol=='docente' else 'cursos.mis_cursos','Mis cursos','libro'),('panel.lista_evaluaciones','Evaluaciones','calendario')] %}
+{% if g.usuario.rol=='estudiante' %}{% set enlaces=[enlaces[0],('cursos.catalogo','Explorar cursos','brujula'),enlaces[1],enlaces[2],('calificaciones.lista','Calificaciones','grafico')] %}{% else %}{% set enlaces=enlaces+[('cursos.nuevo','Crear curso','mas')] %}{% endif %}
+{% for endpoint,texto,simbolo in enlaces %}<a href="{{ url_for(endpoint) }}" {% if request.endpoint==endpoint or endpoint=='panel.lista_evaluaciones' and request.endpoint and request.endpoint.startswith('evaluaciones.') %}aria-current="page"{% endif %}>{{ icono(simbolo) }}{{ texto }}</a>{% endfor %}</nav>
+<form class="salir" action="{{ url_for('auth.logout') }}" method="post"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="enlace-salir">{{ icono('salir') }}Cerrar sesión</button></form>{% endif %}
+<div class="sidebar-pie"><div class="joya" aria-hidden="true"></div><small>© 2026 E-Learning.<br>Tu espacio para aprender.</small></div></aside>
+{% endif %}
+<div class="{{ 'acceso-pagina' if publica else 'pagina' }}">{% if not publica %}<header class="topbar"><div><strong>E-Learning</strong><span>Aprende, crece y avanza.</span></div>{% if g.usuario and g.usuario.rol=='estudiante' %}<form class="busqueda-superior" action="{{ url_for('cursos.catalogo') }}">{{ icono('buscar') }}<input aria-label="Buscar cursos" name="q" placeholder="¿Qué quieres aprender hoy?" value="{{ request.args.get('q','') }}"></form>{% endif %}{% if g.usuario %}<div class="cuenta-superior"><span class="avatar">{{ g.usuario.nombre[0] }}</span><span>{{ g.usuario.nombre }}<small>{{ g.usuario.rol|capitalize }}</small></span></div>{% endif %}</header>{% endif %}
+<main id="contenido">{% if not publica and volver %}<a class="boton secundario volver-pagina" href="{{ volver }}">← Volver</a>{% endif %}{% for tipo,mensaje in get_flashed_messages(with_categories=true) %}{{ alerta(mensaje,tipo) }}{% endfor %}{% block contenido %}{% endblock %}</main></div></body></html>
